@@ -2,10 +2,11 @@
 #include <iostream>
 #include <WinUser.h>
 #include <Windows.h>
-#include <time.h>
+#include <ctime>
 #include <cmath>
 #include <string>
 #include <algorithm>
+#include <fstream>
 
 
 using namespace std;
@@ -29,6 +30,10 @@ HBRUSH brush2;
 HBRUSH brush3;
 HPEN pen;
 string path;
+SYSTEMTIME st;
+int diff = 0;
+string modes[4] = { "Easy", "Medium", "Hard", "Extreme" };
+
 
 // Environment preferences
 int border_left = 130;
@@ -373,6 +378,12 @@ void ball_check_collision() {
 			string flag_play_again = "";
 			cout << "Game Over" << endl;
 			cout << "Your score: " << score << endl;
+
+			GetLocalTime(&st);
+			ofstream of("Achievments.txt", ios::binary | ios::app);
+
+			of << st.wDay << "." << st.wMonth << "." << st.wYear << " " << st.wHour << ":" << st.wMinute << ":" << st.wSecond << " Mode: " << modes[diff] << "; Score: " << score << endl;
+
 			cout << "Play again? (y/n) ";
 			cin >> flag_play_again;
 			while (flag_play_again != "y" && flag_play_again != "n") {
@@ -657,9 +668,10 @@ void bricks_setup() {
 
 int main(int argc, char *argv[]) {
 	system("cls");
+
 	path = argv[0];
 	cout << "Hello! It is arkanoid! Choose difficulty level:\n1. Easy\n2. Medium\n3. Hard\n4. Extreme\n";
-	int diff = 0;
+
 	while (true) {
 		string difficulty;
 		cin >> difficulty;
